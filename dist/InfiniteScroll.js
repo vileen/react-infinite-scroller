@@ -40,19 +40,25 @@ var InfiniteScroll = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.pageLoaded = this.props.pageStart;
-      this.attachScrollListener();
+      if (this.props.hasMore) this.attachScrollListener();
+    }
+  }, {
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      this.props = nextProps;
+      if (!this.props.hasMore) this.detachScrollListener();
+      if (this.props.isRestart) this.pageLoaded = this.props.pageStart;
     }
   }, {
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
-      this.attachScrollListener();
+      if (this.props.hasMore) this.attachScrollListener();
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this.detachScrollListener();
     }
-
     // Set a defaut loader for all your `InfiniteScroll` components
 
   }, {
@@ -143,7 +149,8 @@ var InfiniteScroll = function (_Component) {
           threshold = _props.threshold,
           useCapture = _props.useCapture,
           useWindow = _props.useWindow,
-          props = _objectWithoutProperties(_props, ['children', 'element', 'hasMore', 'initialLoad', 'isReverse', 'loader', 'loadMore', 'pageStart', 'threshold', 'useCapture', 'useWindow']);
+          isRestart = _props.isRestart,
+          props = _objectWithoutProperties(_props, ['children', 'element', 'hasMore', 'initialLoad', 'isReverse', 'loader', 'loadMore', 'pageStart', 'threshold', 'useCapture', 'useWindow', 'isRestart']);
 
       props.ref = function (node) {
         _this2.scrollComponent = node;
@@ -167,7 +174,8 @@ InfiniteScroll.propTypes = {
   useCapture: _propTypes2.default.bool,
   useWindow: _propTypes2.default.bool,
   children: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.array]).isRequired,
-  loader: _propTypes2.default.object
+  loader: _propTypes2.default.object,
+  isRestart: _propTypes2.default.bool
 };
 InfiniteScroll.defaultProps = {
   element: 'div',
@@ -178,7 +186,8 @@ InfiniteScroll.defaultProps = {
   useWindow: true,
   isReverse: false,
   useCapture: false,
-  loader: null
+  loader: null,
+  isRestart: false
 };
 exports.default = InfiniteScroll;
 module.exports = exports['default'];
